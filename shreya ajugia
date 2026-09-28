@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Prediction App</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #4f46e5, #9333ea);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 25px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+        text-align: center;
+        color: #222;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #777;
+        margin-bottom: 25px;
+    }
+
+    .group {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 7px;
+        color: #333;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: #6366f1;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #4f46e5, #9333ea);
+        color: white;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    #result {
+        display: none;
+        margin-top: 25px;
+        padding: 25px;
+        background: #f5f3ff;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    #career {
+        color: #4f46e5;
+        font-size: 28px;
+        margin: 12px 0;
+    }
+
+    .percentage {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .skills {
+        margin-top: 15px;
+        color: #555;
+    }
+
+    .warning {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #777;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🚀 Career Predictor</h1>
+
+    <p class="subtitle">
+        Discover career fields that match your interests and skills
+    </p>
+
+    <form id="careerForm">
+
+        <div class="group">
+            <label>Education</label>
+
+            <select id="education" required>
+                <option value="">Select education</option>
+                <option value="school">School</option>
+                <option value="diploma">Diploma</option>
+                <option value="btech">B.Tech / B.E.</option>
+                <option value="bca">BCA / MCA</option>
+                <option value="bcom">B.Com / M.Com</option>
+                <option value="ba">BA / MA</option>
+                <option value="mba">MBA</option>
+            </select>
+        </div>
+
+        <div class="group">
+            <label>Years of Experience</label>
+
+            <input
+                type="number"
+                id="experience"
+                min="0"
+                max="40"
+                placeholder="Example: 2"
+                required
+            >
+        </div>
+
+        <div class="group">
+            <label>Programming Skill (%)</label>
+
+            <input
+                type="number"
+                id="programming"
+                min="0"
+                max="100"
+                placeholder="Example: 80"
+                required
+            >
+        </div>
+
+        <div class="group">
+            <label>Communication Skill (%)</label>
+
+            <input
+                type="number"
+                id="communication"
+                min="0"
+                max="100"
+                placeholder="Example: 75"
+                required
+            >
+        </div>
+
+        <div class="group">
+            <label>Analytical Skill (%)</label>
+
+            <input
+                type="number"
+                id="analytical"
+                min="0"
+                max="100"
+                placeholder="Example: 85"
+                required
+            >
+        </div>
+
+        <div class="group">
+            <label>Creativity (%)</label>
+
+            <input
+                type="number"
+                id="creativity"
+                min="0"
+                max="100"
+                placeholder="Example: 70"
+                required
+            >
+        </div>
+
+        <div class="group">
+            <label>Career Interest</label>
+
+            <select id="interest" required>
+
+                <option value="">Select interest</option>
+
+                <option value="technology">
+                    Technology / Software
+                </option>
+
+                <option value="data">
+                    Data / Analytics
+                </option>
+
+                <option value="business">
+                    Business / Management
+                </option>
+
+                <option value="design">
+                    Design / Creative
+                </option>
+
+                <option value="marketing">
+                    Marketing / Sales
+                </option>
+
+            </select>
+        </div>
+
+        <button type="submit">
+            Predict Career
+        </button>
+
+    </form>
+
+
+    <div id="result">
+
+        <h3>Suggested Career Field</h3>
+
+        <div id="career">
+            -
+        </div>
+
+        <div class="percentage" id="match">
+            Match: 0%
+        </div>
+
+        <div class="skills" id="skills">
+        </div>
+
+        <p class="warning">
+            This is an educational demonstration and should not be
+            treated as a definitive career assessment.
+        </p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.getElementById("careerForm").addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    // Get values
+    const programming =
+        Number(document.getElementById("programming").value);
+
+    const communication =
+        Number(document.getElementById("communication").value);
+
+    const analytical =
+        Number(document.getElementById("analytical").value);
+
+    const creativity =
+        Number(document.getElementById("creativity").value);
+
+    const experience =
+        Number(document.getElementById("experience").value);
+
+    const interest =
+        document.getElementById("interest").value;
+
+
+    /*
+       Calculate scores for different career fields.
+       This is a simple demonstration model.
+    */
+
+    const scores = {
+
+        technology:
+            programming * 0.50 +
+            analytical * 0.25 +
+            creativity * 0.10 +
+            communication * 0.15,
+
+        data:
+            analytical * 0.50 +
+            programming * 0.30 +
+            communication * 0.10 +
+            creativity * 0.10,
+
+        business:
+            communication * 0.40 +
+            analytical * 0.25 +
+            creativity * 0.15 +
+            programming * 0.20,
+
+        design:
+            creativity * 0.55 +
+            communication * 0.20 +
+            analytical * 0.15 +
+            programming * 0.10,
+
+        marketing:
+            communication * 0.45 +
+            creativity * 0.30 +
+            analytical * 0.15 +
+            programming * 0.10
+    };
+
+
+    // Add interest bonus
+    if (interest === "technology")
+        scores.technology += 10;
+
+    if (interest === "data")
+        scores.data += 10;
+
+    if (interest === "business")
+        scores.business += 10;
+
+    if (interest === "design")
+        scores.design += 10;
+
+    if (interest === "marketing")
+        scores.marketing += 10;
+
+
+    // Small experience contribution
+    const experienceBonus = Math.min(experience * 1.5, 10);
+
+    for (let field in scores) {
+        scores[field] += experienceBonus;
+        scores[field] = Math.min(Math.round(scores[field]), 100);
+    }
+
+
+    // Find highest score
+    let bestCareer = "";
+    let highestScore = 0;
+
+    for (let field in scores) {
+
+        if (scores[field] > highestScore) {
+
+            highestScore = scores[field];
+            bestCareer = field;
+        }
+    }
+
+
+    // Career information
+    const careerInfo = {
+
+        technology: {
+            name: "Software / Technology",
+            skills: "JavaScript, Python, Java, Web Development, Cloud"
+        },
+
+        data: {
+            name: "Data Analytics / Data Science",
+            skills: "Python, SQL, Statistics, Excel, Machine Learning"
+        },
+
+        business: {
+            name: "Business / Management",
+            skills: "Leadership, Communication, Excel, Management, Strategy"
+        },
+
+        design: {
+            name: "UI/UX & Creative Design",
+            skills: "Figma, UI Design, UX Research, Photoshop, Creativity"
+        },
+
+        marketing: {
+            name: "Digital Marketing / Sales",
+            skills: "SEO, Social Media, Communication, Advertising, Analytics"
+        }
+    };
+
+
+    // Display result
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("career").textContent =
+        careerInfo[bestCareer].name;
+
+    document.getElementById("match").textContent =
+        "Match Score: " + highestScore + "%";
+
+    document.getElementById("skills").textContent =
+        "Recommended skills: " +
+        careerInfo[bestCareer].skills;
+
+});
+
+</script>
+
+</body>
+</html>
